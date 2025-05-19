@@ -5,6 +5,11 @@ const EventCard = ({ event }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
+    if (!event._id || event._id.includes("<")) {
+      console.warn("Invalid event ID:", event._id);
+      return;
+    }
+
     navigate(`/events/${event._id}`);
   };
 
@@ -19,7 +24,6 @@ const EventCard = ({ event }) => {
   );
 };
 
-// Simple inline styles (feel free to replace with CSS)
 const cardStyle = {
   border: "1px solid #ccc",
   borderRadius: "8px",

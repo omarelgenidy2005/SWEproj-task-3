@@ -15,7 +15,7 @@ const UpdateProfileForm = ({ initialData, onCancel, onUpdate }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        "/api/v1/user/profile",
+        "/api/v1/users/profile",
         { name, password },
         {
           headers: { Authorization: `Bearer ${token}` },

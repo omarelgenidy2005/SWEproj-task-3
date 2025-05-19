@@ -33,9 +33,11 @@ const EventList = () => {
     <div className="event-list">
       <h2>Available Events</h2>
       <div className="event-grid">
-        {events.map((event) => (
-          <EventCard key={event._id} event={event} />
-        ))}
+        {events.map((event) => {
+  console.log("Event being rendered:", event);  
+  return <EventCard key={event._id} event={event} />;
+          })}
+
       </div>
     </div>
   );
