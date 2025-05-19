@@ -37,18 +37,23 @@ const eventController = {
  // Get single event (Public)
 // Updated Public Version
 getEventById: async (req, res) => {
-    try {
-      const event = await Event.findById(req.params.id)
-        .populate("organizer", "name email");
-      
-      if (!event) return res.status(404).json({ msg: "Event not found" });
-      
-      res.status(200).json(event);
-    } catch (error) {
-      console.error("Error fetching event:", error);
-      res.status(500).json({ message: "Server error" });
-    }
-  },
+  try {
+    const event = await Event.findById(req.params.id)
+      .populate("organizer", "name email");
+
+    if (!event) return res.status(404).json({ msg: "Event not found" });
+
+    const availableTickets = event.totalTickets - (event.bookedTickets || 0);
+
+    res.status(200).json({
+      ...event.toObject(),
+      availableTickets,
+    });
+  } catch (error) {
+    console.error("Error fetching event:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+},
 
   //  Create event (Organizer only)
   createEvent: async (req, res) => {
