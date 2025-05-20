@@ -11,9 +11,12 @@ const EventDetails = () => {
     const fetchEvent = async () => {
       try {
         const res = await api.get(`/events/${id}`);
-        console.log("Fetched event: ", res.data);
         setEvent(res.data);
+        console.log("Fetched event from API:", res.data);
+        console.log("event.availableTickets =", res.data.availableTickets);
       } catch (error) {
+        console.log("event.availableTickets =", event.availableTickets);
+
         console.error("Failed to fetch event", error);
       }
     };
@@ -28,11 +31,11 @@ const EventDetails = () => {
       <p><strong>Date:</strong> {new Date(event.Date).toLocaleDateString()}</p>
       <p><strong>Location:</strong> {event.location}</p>
       <p><strong>Price:</strong> EGP {event.ticketpricing}</p>
-      <p><strong>Total Tickets:</strong> {event.availableTickets}</p>
+      <p><strong>Available Tickets:</strong> {event.availableTickets}</p>
 
       {event.availableTickets > 0 ? (
         <BookTicketForm
-          eventId={event._id}
+          eventId={event._id} 
           pricePerTicket={event.ticketpricing}
           availableTickets={event.availableTickets}
         />

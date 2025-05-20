@@ -1,55 +1,50 @@
-import {useState} from 'react';
-import api from '../../api/api';
-import {toast} from 'react-toastify';
+import { useState } from "react";
+import api from "../../api/api";
+import { toast } from "react-toastify";
 
+const BookTicketForm = ({ eventId, pricePerTicket, availableTickets }) => {
+  const [quantity, setQuantity] = useState(1);
+  const [loading, setLoading] = useState(false);
 
-const BookTicketForm = ({eventId, pricePerTicket, availableTickets})=>{
-    const [quantity, setQuantity] = useState(1);
+  const handleBooking = async () => {
+    if (quantity > availableTickets) {
+      toast.error("Not enough tickets available");
+      return;
+    }
 
-    const bookingHandler = async () =>{
-        if(quantity > availableTickets){
-            toast.error("Sorry, not enough tickets available");
-            return;
-        }
-
-        try {
-            await api.post("/bookings",{eventId, quantity});
-            toast.success("Booking successful");
-        } catch (error) {
-            toast.error(error.response?.data?.msg || "Booking failed.");
-        }
-    };
+    try {
+      setLoading(true);
+      const res = await api.post("/bookings", {
+        eventId,
+        ticketsBooked: quantity,
+      });
+      toast.success("Booking successful!");
+    } catch (error) {
+      console.error("Booking failed", error);
+      toast.error("Booking failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-  <div className="booking-form">
-    <h2>Book Tickets</h2>
-
-    <div className="form-group">
-      <label htmlFor="quantity">Quantity:</label>
+    <div style={{ marginTop: "1rem" }}>
+      <label htmlFor="quantity">Tickets:</label>
       <input
-        type="number"
         id="quantity"
+        type="number"
         value={quantity}
-        onChange={(e) => setQuantity(Number(e.target.value))}
         min="1"
         max={availableTickets}
+        onChange={(e) => setQuantity(Number(e.target.value))}
+        style={{ marginLeft: "1rem", width: "60px" }}
       />
+      <p>Total Price: <strong>EGP {quantity * pricePerTicket}</strong></p>
+      <button onClick={handleBooking} disabled={loading}>
+        {loading ? "Booking..." : "Book Now"}
+      </button>
     </div>
-
-    <div className="total-price">
-      Total Price: ${ (pricePerTicket * quantity).toFixed(2) }
-    </div>
-
-    <button
-      onClick={bookingHandler}
-      className="btn btn-primary"
-      disabled={quantity < 1 || quantity > availableTickets}
-    >
-      Book Now
-    </button>
-  </div>
-);
-  
-}
+  );
+};
 
 export default BookTicketForm;

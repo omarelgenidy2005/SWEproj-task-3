@@ -43,12 +43,8 @@ getEventById: async (req, res) => {
 
     if (!event) return res.status(404).json({ msg: "Event not found" });
 
-    const availableTickets = event.totalTickets - (event.bookedTickets || 0);
+   res.status(200).json(event);
 
-    res.status(200).json({
-      ...event.toObject(),
-      availableTickets,
-    });
   } catch (error) {
     console.error("Error fetching event:", error);
     res.status(500).json({ message: "Server error" });
