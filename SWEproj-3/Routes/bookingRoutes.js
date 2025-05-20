@@ -8,5 +8,7 @@ router.post("/", verifyToken, bookingController.createBooking);
 
 router.delete("/:id", verifyToken, bookingController.cancelBooking);
 
+
+
   router.get("/:id", verifyToken, bookingController.getBookingById);
 module.exports = router;

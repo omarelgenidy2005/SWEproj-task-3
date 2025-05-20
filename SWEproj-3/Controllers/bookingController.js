@@ -87,7 +87,7 @@ const bookingController = {
     getUserBookings: async (req, res) => {
         try {
           const bookings = await Booking.find({ user: req.user.id })
-            .populate("event", "title date location ticketpricing status");
+            .populate("event", "title Date location ticketpricing status");
       
           res.status(200).json(bookings);
         } catch (error) {

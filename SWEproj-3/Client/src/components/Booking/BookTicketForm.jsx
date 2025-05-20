@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../api/api";
 import { toast } from "react-toastify";
 
 const BookTicketForm = ({ eventId, pricePerTicket, availableTickets }) => {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleBooking = async () => {
     if (quantity > availableTickets) {
@@ -14,14 +16,39 @@ const BookTicketForm = ({ eventId, pricePerTicket, availableTickets }) => {
 
     try {
       setLoading(true);
-      const res = await api.post("/bookings", {
-        eventId,
-        ticketsBooked: quantity,
-      });
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("You must be logged in to book tickets");
+        setLoading(false);
+        return;
+      }
+
+      const res = await api.post(
+        "/bookings",
+        {
+          eventId,
+          ticketsBooked: quantity,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("Booking API response:", res.data);
       toast.success("Booking successful!");
+
+      // Optional: Reset quantity or redirect
+      setQuantity(1);
+      setTimeout(() => {
+        navigate("/bookings");
+      }, 1500); // Redirect after 1.5 seconds
+
     } catch (error) {
       console.error("Booking failed", error);
-      toast.error("Booking failed");
+      toast.error(error.response?.data?.message || "Booking failed");
     } finally {
       setLoading(false);
     }
