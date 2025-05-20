@@ -1,12 +1,12 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LoginForm from './components/auth/LoginForm';
-import RegisterForm from './components/auth/RegisterForm';
-import ForgotPassword from './components/auth/ForgotPassword';
-import ProfilePage from './components/ProfilePage';
-import ProtectedRoute from './routes/ProtectedRoute';
-import EventDetails from './pages/EventDetails';
-import UserBookingsPage from "./pages/UserBookingsPage";
-import { AuthProvider } from './context/AuthContext';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LoginForm from "./components/auth/LoginForm";
+import RegisterForm from "./components/auth/RegisterForm";
+import ForgotPassword from "./components/auth/ForgotPassword";
+import ProfilePage from "./components/auth/ProfilePage";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext";
+
+// Event components
 import EventList from "./components/events/EventList";
 import EventDetails from "./components/events/EventDetails";
 
@@ -22,32 +22,21 @@ function App() {
 
           {/*  Public Event Routes */}
           <Route path="/events" element={<EventList />} />
-
-         
-          
           <Route path="/events/:id" element={<EventDetails />} />
-          {/* ✅ Protected route for authenticated users */}
-    <Route
-      path="/profile"
-      element={
-        <ProtectedRoute>
-          <ProfilePage />
-        </ProtectedRoute>
-      }
-    />
-    <Route
-      path="/bookings"
-      element={
-        <ProtectedRoute>
-          <UserBookingsPage />
-        </ProtectedRoute>
-      }
-    />
+
+          {/* Protected Route */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Router>
     </AuthProvider>
   );
-  
 }
 
 export default App;
