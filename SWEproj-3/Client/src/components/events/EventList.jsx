@@ -30,17 +30,22 @@ const EventList = () => {
   if (events.length === 0) return <p>No events available.</p>;
 
   return (
-    <div className="event-list">
-      <h2>Available Events</h2>
-      <div className="event-grid">
-        {events.map((event) => {
-  console.log("Event being rendered:", event);  
-  return <EventCard key={event._id} event={event} />;
-          })}
-
-      </div>
+  <div style={{ padding: "40px" }}>
+    <h2 style={{ color: "#fff", marginBottom: "20px" }}>Available Events</h2>
+    <div style={{
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "center",
+      gap: "20px",
+    }}>
+      {events.map((event) => {
+        console.log("Event being rendered:", event);
+        return <EventCard key={event._id} event={event} />;
+      })}
     </div>
-  );
+  </div>
+);
+
 };
 
 export default EventList;

@@ -26,11 +26,16 @@ const EventCard = ({ event }) => {
 
 const cardStyle = {
   border: "1px solid #ccc",
-  borderRadius: "8px",
+  borderRadius: "10px",
   padding: "1rem",
-  margin: "0.5rem",
+  margin: "1rem",
+  backgroundColor: "#ffffff",         // bright background
+  color: "#1e1e1e",                   // dark text for contrast
   cursor: "pointer",
-  backgroundColor: "#f9f9f9",
+  width: "280px",                     // consistent width
+  boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+  transition: "transform 0.2s ease",
 };
+
 
 export default EventCard;
