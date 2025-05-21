@@ -9,6 +9,7 @@ import { AuthProvider } from "./context/AuthContext";
 // Event components
 import EventList from "./components/events/EventList";
 import EventDetails from "./components/events/EventDetails";
+import AdminUsersPage from "./components/Admins/AdminUsersPage";
 
 function App() {
   return (
@@ -23,6 +24,10 @@ function App() {
           {/*  Public Event Routes */}
           <Route path="/events" element={<EventList />} />
           <Route path="/events/:id" element={<EventDetails />} />
+          
+          {/* <Route path="/Admin" element={<EventList />} /> */}
+          <Route path="/admin/users" element={<AdminUsersPage />} />
+          
 
           {/* Protected Route */}
           <Route
