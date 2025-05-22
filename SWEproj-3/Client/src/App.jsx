@@ -9,6 +9,7 @@ import { AuthProvider } from "./context/AuthContext";
 // Event components
 import EventList from "./components/events/EventList";
 import EventDetails from "./components/events/EventDetails";
+import EventForm from "./components/events/EventForm"; // Add this import
 
 function App() {
   return (
@@ -20,11 +21,11 @@ function App() {
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
 
-          {/*  Public Event Routes */}
+          {/* Public Event Routes */}
           <Route path="/events" element={<EventList />} />
           <Route path="/events/:id" element={<EventDetails />} />
 
-          {/* Protected Route */}
+          {/* Protected Routes */}
           <Route
             path="/profile"
             element={
@@ -32,6 +33,11 @@ function App() {
                 <ProfilePage />
               </ProtectedRoute>
             }
+          />
+          
+          {/* New Event Form Routes - Add these exactly as shown below */}
+          <Route path="/my-events/new" element={<ProtectedRoute><EventForm /></ProtectedRoute>}/>
+          <Route path="/my-events/:id/edit" element={<ProtectedRoute><EventForm editMode={true} /></ProtectedRoute>}
           />
         </Routes>
       </Router>

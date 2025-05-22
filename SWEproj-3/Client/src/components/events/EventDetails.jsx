@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getEventById } from "../../api/api";
 import { useAuth } from "../../context/AuthContext";
+import "./EventDetails.css";
+import { FaCalendarAlt, FaMapMarkerAlt, FaTag, FaTicketAlt, FaInfoCircle } from "react-icons/fa";
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -17,6 +19,7 @@ const EventDetails = () => {
         setEvent(response.data);
       } catch (err) {
         setError("Event not found or failed to load.");
+        console.error("Error fetching event:", err);
       } finally {
         setLoading(false);
       }
@@ -25,42 +28,74 @@ const EventDetails = () => {
     fetchEvent();
   }, [id]);
 
-  if (loading) return <p>Loading event details...</p>;
-  if (error) return <p>{error}</p>;
+  if (loading) return <div className="loading-container"><div className="spinner"></div></div>;
+  if (error) return <div className="error-container">{error}</div>;
   if (!event) return null;
 
   return (
-    <div className="event-details" style={detailStyle}>
-      <h2>{event.title}</h2>
-      <img
-        src={event.Image}
-        alt={event.title}
-        style={{ width: "100%", maxWidth: "500px", borderRadius: "10px" }}
-      />
-      <p><strong>Date:</strong> {new Date(event.Date).toLocaleDateString()}</p>
-      <p><strong>Location:</strong> {event.location}</p>
-      <p><strong>Category:</strong> {event.category}</p>
-      <p><strong>Price:</strong> ${event.ticketpricing}</p>
-      <p><strong>Description:</strong> {event.description}</p>
-      <p><strong>Available Tickets:</strong> {event.availableTickets}</p>
-
-      {user?.role === "customer" && (
-        <div style={{ marginTop: "1rem" }}>
-          {/* Placeholder for booking form (will be implemented in part e) */}
-          <button disabled>Booking Coming Soon</button>
+    <div className="event-details-container">
+      <div className="event-hero">
+        <img src={event.Image} alt={event.title} className="hero-image" />
+        <div className="hero-overlay">
+          <h1 className="event-title">{event.title}</h1>
+          <div className="event-meta">
+            <span className="meta-item">
+              <FaCalendarAlt className="meta-icon" />
+              {new Date(event.date).toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </span>
+            <span className="meta-item">
+              <FaMapMarkerAlt className="meta-icon" />
+              {event.location}
+            </span>
+          </div>
         </div>
-      )}
+      </div>
+
+      <div className="event-content">
+        <div className="event-main">
+          <div className="event-description">
+            <h3 className="section-title">
+              <FaInfoCircle className="section-icon" />
+              About This Event
+            </h3>
+            <p>{event.description}</p>
+          </div>
+        </div>
+
+        <div className="event-sidebar">
+          <div className="ticket-box">
+            <div className="price-section">
+              <span className="price-label">Starting at</span>
+              <span className="price-amount">${event.price}</span>
+              <span className="price-currency">USD</span>
+            </div>
+
+            <div className="ticket-info">
+              <div className="info-row">
+                <FaTicketAlt className="info-icon" />
+                <span>{event.ticketCount} tickets available</span>
+              </div>
+              <div className="info-row">
+                <FaTag className="info-icon" />
+                <span>{event.category}</span>
+              </div>
+            </div>
+
+            {user?.role === "customer" && (
+              <button className="primary-button">
+                Book Now
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
-};
-
-const detailStyle = {
-  padding: "1rem",
-  maxWidth: "700px",
-  margin: "auto",
-  backgroundColor: "#fff",
-  borderRadius: "8px",
-  boxShadow: "0 0 10px rgba(0,0,0,0.1)",
 };
 
 export default EventDetails;
