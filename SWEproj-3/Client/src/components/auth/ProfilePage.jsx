@@ -1,12 +1,15 @@
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import UpdateProfileForm from "./UpdateProfileForm";
 
 const ProfilePage = () => {
   const [userData, setUserData] = useState(null);
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -17,6 +20,7 @@ const ProfilePage = () => {
         });
         setUserData(response.data);
       } catch (err) {
+        console.error("Profile fetch error:", err);
         setError("Failed to load profile.");
       }
     };
@@ -24,8 +28,12 @@ const ProfilePage = () => {
     fetchProfile();
   }, []);
 
-  if (error) return <p style={{ color: "red", textAlign: "center" }}>{error}</p>;
-  if (!userData) return <p style={{ color: "#eee", textAlign: "center" }}>Loading profile...</p>;
+  if (error)
+    return <p style={{ color: "red", textAlign: "center" }}>{error}</p>;
+  if (!userData)
+    return (
+      <p style={{ color: "#eee", textAlign: "center" }}>Loading profile...</p>
+    );
 
   return (
     <div style={containerStyle}>
@@ -34,10 +42,39 @@ const ProfilePage = () => {
 
         {!editing ? (
           <div style={infoStyle}>
-            <div style={rowStyle}><strong>Name:</strong> <span>{userData.name}</span></div>
-            <div style={rowStyle}><strong>Email:</strong> <span>{userData.email}</span></div>
-            <div style={rowStyle}><strong>Role:</strong> <span>{userData.role}</span></div>
-            <button onClick={() => setEditing(true)} style={buttonStyle}>Edit Profile</button>
+            <div style={rowStyle}>
+              <strong>Name:</strong> <span>{userData.name}</span>
+            </div>
+            <div style={rowStyle}>
+              <strong>Email:</strong> <span>{userData.email}</span>
+            </div>
+            <div style={rowStyle}>
+              <strong>Role:</strong> <span>{userData.role}</span>
+            </div>
+
+            {/* Show My Events button only for organizers */}
+            {userData.role === "Organizer" && (
+              <button
+                onClick={() => navigate("/my-events")}
+                style={buttonStyle}
+              >
+                My Events
+              </button>
+            )}
+
+            {/* Show Admin Events button only for system admins */}
+            {userData.role === "System Admin" && (
+              <button
+                onClick={() => navigate("/admin/events")}
+                style={buttonStyle}
+              >
+                View All Events
+              </button>
+            )}
+
+            <button onClick={() => setEditing(true)} style={buttonStyle}>
+              Edit Profile
+            </button>
           </div>
         ) : (
           <UpdateProfileForm
@@ -54,9 +91,9 @@ const ProfilePage = () => {
   );
 };
 
-// ✅ Modern dark color theme
+// ✅ Styling for modern dark UI
 const containerStyle = {
-  backgroundColor: "#0f172a", // deep navy blue
+  backgroundColor: "#0f172a",
   minHeight: "100vh",
   display: "flex",
   justifyContent: "center",
@@ -65,7 +102,7 @@ const containerStyle = {
 };
 
 const cardStyle = {
-  backgroundColor: "#1e293b", // slightly lighter navy
+  backgroundColor: "#1e293b",
   padding: "40px",
   borderRadius: "12px",
   boxShadow: "0 10px 25px rgba(0, 0, 0, 0.5)",
@@ -95,15 +132,14 @@ const rowStyle = {
 };
 
 const buttonStyle = {
-  marginTop: "25px",
+  marginTop: "15px",
   padding: "10px",
   border: "none",
   borderRadius: "6px",
-  backgroundColor: "#38bdf8", // sky blue
+  backgroundColor: "#38bdf8",
   color: "#000",
   fontWeight: "bold",
   cursor: "pointer",
 };
 
 export default ProfilePage;
-

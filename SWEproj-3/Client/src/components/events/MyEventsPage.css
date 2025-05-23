@@ -1,0 +1,43 @@
+.my-events-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: rgb(255, 255, 255);
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Poppins', sans-serif;
+}
+
+.my-events-container h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+}
+
+.my-events-container h3 {
+  color: #000000; /* black */
+}
+
+.my-events-list {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.my-event-card {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  border: 1px solid #dee2e6;
+  transition: box-shadow 0.2s ease;
+}
+
+.my-event-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.action-buttons {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}

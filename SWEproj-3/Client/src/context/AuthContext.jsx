@@ -1,43 +1,41 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
-
-// 1. Create the context
 const AuthContext = createContext();
 
-// 2. Create a custom hook to access the context
 export const useAuth = () => useContext(AuthContext);
 
-// 3. Create the provider component
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);       // user object
-  const [token, setToken] = useState(null);     // JWT token
-  const [loading, setLoading] = useState(true); // app-wide auth loading
-  
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Load saved user and token on initial app load
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     const savedToken = localStorage.getItem('token');
     if (savedUser && savedToken) {
       setUser(JSON.parse(savedUser));
       setToken(savedToken);
+
+      // ✅ Set Axios default header
+      axios.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`;
     }
     setLoading(false);
   }, []);
 
-  // Login function
   const login = async (email, password) => {
     try {
       const res = await axios.post('/api/v1/login', { email, password });
       const userData = res.data.user;
       const jwt = res.data.token;
 
-      // Save in state and localStorage
       setUser(userData);
       setToken(jwt);
       localStorage.setItem('user', JSON.stringify(userData));
       localStorage.setItem('token', jwt);
+
+      // ✅ Set Axios default header
+      axios.defaults.headers.common['Authorization'] = `Bearer ${jwt}`;
 
       return { success: true };
     } catch (err) {
@@ -45,7 +43,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Register function
   const register = async (name, email, password, role) => {
     try {
       await axios.post('/api/v1/register', { name, email, password, role });
@@ -55,19 +52,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Logout function
   const logout = async () => {
     try {
       await axios.get('/api/v1/logout');
     } catch (err) {
-      // Ignore error
+      // Optional: log error
     }
 
     setUser(null);
     setToken(null);
     localStorage.removeItem('user');
     localStorage.removeItem('token');
-    
+    delete axios.defaults.headers.common['Authorization'];
   };
 
   return (
