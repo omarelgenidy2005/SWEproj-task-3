@@ -28,6 +28,19 @@ const EventDetails = () => {
     fetchEvent();
   }, [id]);
 
+  const formatDate = (dateStr) => {
+    try {
+      return new Date(dateStr).toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } catch {
+      return "N/A";
+    }
+  };
+
   if (loading) return <div className="loading-container"><div className="spinner"></div></div>;
   if (error) return <div className="error-container">{error}</div>;
   if (!event) return null;
@@ -35,22 +48,17 @@ const EventDetails = () => {
   return (
     <div className="event-details-container">
       <div className="event-hero">
-        <img src={event.Image} alt={event.title} className="hero-image" />
+        <img src={event.Image || "/placeholder.jpg"} alt={event.title} className="hero-image" />
         <div className="hero-overlay">
-          <h1 className="event-title">{event.title}</h1>
+          <h1 className="event-title">{event.title || "Untitled Event"}</h1>
           <div className="event-meta">
             <span className="meta-item">
               <FaCalendarAlt className="meta-icon" />
-              {new Date(event.date).toLocaleDateString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}
+              {formatDate(event.Date)}
             </span>
             <span className="meta-item">
               <FaMapMarkerAlt className="meta-icon" />
-              {event.location}
+              {event.location || "N/A"}
             </span>
           </div>
         </div>
@@ -63,26 +71,34 @@ const EventDetails = () => {
               <FaInfoCircle className="section-icon" />
               About This Event
             </h3>
-            <p>{event.description}</p>
+            <p>{event.description || "No description provided."}</p>
           </div>
         </div>
 
         <div className="event-sidebar">
           <div className="ticket-box">
             <div className="price-section">
-              <span className="price-label">Starting at</span>
-              <span className="price-amount">${event.price}</span>
+              <span className="price-label">Price</span>
+              <span className="price-amount">
+                {event.ticketpricing !== undefined && event.ticketpricing !== null
+                  ? `$${parseFloat(event.ticketpricing).toFixed(2)}`
+                  : "N/A"}
+              </span>
               <span className="price-currency">USD</span>
             </div>
 
             <div className="ticket-info">
               <div className="info-row">
                 <FaTicketAlt className="info-icon" />
-                <span>{event.ticketCount} tickets available</span>
+                <span>
+                  {event.availableTickets !== undefined
+                    ? `${event.availableTickets} ticket${event.availableTickets !== 1 ? 's' : ''}`
+                    : "N/A"}
+                </span>
               </div>
               <div className="info-row">
                 <FaTag className="info-icon" />
-                <span>{event.category}</span>
+                <span>{event.category || "N/A"}</span>
               </div>
             </div>
 

@@ -23,14 +23,15 @@ const EventForm = ({ editMode = false }) => {
 
   const [formData, setFormData] = useState({
     title: '',
-    date: null,
+    Date: null,
     location: '',
-    ticketCount: '',
-    price: '',
-    description: ''
+    availableTickets: '',
+    ticketpricing: '',
+    category: '',
+    description: '',
+    Image: ''
   });
 
-  // Redirect if not logged in as Organizer
   useEffect(() => {
     if (!user || user.role !== 'Organizer') {
       toast.error('You must be logged in as an organizer');
@@ -38,7 +39,6 @@ const EventForm = ({ editMode = false }) => {
     }
   }, [user, navigate]);
 
-  // Fetch event data if in edit mode
   useEffect(() => {
     const fetchEventData = async () => {
       if (editMode && id) {
@@ -49,11 +49,13 @@ const EventForm = ({ editMode = false }) => {
 
           setFormData({
             title: data.title || '',
-            date: data.date ? new Date(data.date) : null,
+            Date: data.Date ? new Date(data.Date) : null,
             location: data.location || '',
-            ticketCount: data.ticketCount?.toString() || '',
-            price: data.price?.toString() || '',
-            description: data.description || ''
+            availableTickets: data.availableTickets?.toString() || '',
+            ticketpricing: data.ticketpricing?.toString() || '',
+            category: data.category || '',
+            description: data.description || '',
+            Image: data.Image || ''
           });
         } catch (err) {
           toast.error('Failed to load event data');
@@ -72,12 +74,14 @@ const EventForm = ({ editMode = false }) => {
   const validateForm = () => {
     const errors = {};
     if (!formData.title) errors.title = 'Title is required';
-    if (!formData.date) errors.date = 'Date is required';
+    if (!formData.Date) errors.Date = 'Date is required';
     if (!formData.location) errors.location = 'Location is required';
-    if (!formData.ticketCount || Number(formData.ticketCount) <= 0)
-      errors.ticketCount = 'Must have at least 1 ticket';
-    if (formData.price === '' || Number(formData.price) < 0)
-      errors.price = 'Price cannot be negative';
+    if (!formData.availableTickets || Number(formData.availableTickets) <= 0)
+      errors.availableTickets = 'Must have at least 1 ticket';
+    if (!formData.ticketpricing || Number(formData.ticketpricing) < 0)
+      errors.ticketpricing = 'Price cannot be negative';
+    if (!formData.category) errors.category = 'Category is required';
+    if (!formData.Image) errors.Image = 'Image URL is required';
     return errors;
   };
 
@@ -94,12 +98,10 @@ const EventForm = ({ editMode = false }) => {
     try {
       setLoading(true);
       const formattedData = {
-        title: formData.title,
-        date: formData.date ? formData.date.toISOString() : null,
-        location: formData.location,
-        ticketCount: Number(formData.ticketCount),
-        price: Number(formData.price),
-        description: formData.description,
+        ...formData,
+        Date: formData.Date.toISOString(),
+        availableTickets: Number(formData.availableTickets),
+        ticketpricing: Number(formData.ticketpricing),
         organizer: user._id,
         status: 'approved'
       };
@@ -107,15 +109,12 @@ const EventForm = ({ editMode = false }) => {
       if (editMode && id) {
         const res = await updateEvent(id, formattedData);
         toast.success('Event updated successfully');
-        console.log("✅ Updated Event:", res.data);
         navigate(`/events/${id}`);
       } else {
         const res = await createEvent(formattedData);
         toast.success('Event created successfully');
-        console.log("✅ Created Event:", res.data);
-        navigate(`/events/${res.data._id}`); // 👈 Redirect to event details
+        navigate(`/events/${res.data._id}`);
       }
-
     } catch (err) {
       console.error('Error saving event:', err);
       toast.error(err.response?.data?.message || 'Failed to save event');
@@ -132,100 +131,40 @@ const EventForm = ({ editMode = false }) => {
     }));
   };
 
-  if (loading) return <div className="loading-spinner">Loading...</div>;
-
   return (
     <div className="event-form-container">
       <h2>{editMode ? 'Edit Event' : 'Create New Event'}</h2>
       <form onSubmit={handleSubmit} className="event-form">
-        <TextField
-          label="Title"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
-          error={!!formErrors.title}
-          helperText={formErrors.title}
-          required
-          fullWidth
-          margin="normal"
-        />
+        <TextField label="Title" name="title" value={formData.title} onChange={handleChange} error={!!formErrors.title} helperText={formErrors.title} required fullWidth margin="normal" />
 
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
             label="Event Date"
-            value={formData.date}
-            onChange={(newValue) => setFormData({ ...formData, date: newValue })}
+            value={formData.Date}
+            onChange={(newValue) => setFormData({ ...formData, Date: newValue })}
             slotProps={{
               textField: {
                 fullWidth: true,
                 margin: 'normal',
                 required: true,
-                error: !!formErrors.date,
-                helperText: formErrors.date
+                error: !!formErrors.Date,
+                helperText: formErrors.Date
               }
             }}
           />
         </LocalizationProvider>
 
-        <TextField
-          label="Location"
-          name="location"
-          value={formData.location}
-          onChange={handleChange}
-          error={!!formErrors.location}
-          helperText={formErrors.location}
-          required
-          fullWidth
-          margin="normal"
-        />
+        <TextField label="Location" name="location" value={formData.location} onChange={handleChange} error={!!formErrors.location} helperText={formErrors.location} required fullWidth margin="normal" />
+        <TextField label="Category" name="category" value={formData.category} onChange={handleChange} error={!!formErrors.category} helperText={formErrors.category} required fullWidth margin="normal" />
+        <TextField label="Image URL" name="Image" value={formData.Image} onChange={handleChange} error={!!formErrors.Image} helperText={formErrors.Image} required fullWidth margin="normal" />
 
-        <TextField
-          label="Ticket Count"
-          name="ticketCount"
-          type="number"
-          value={formData.ticketCount}
-          onChange={handleChange}
-          error={!!formErrors.ticketCount}
-          helperText={formErrors.ticketCount}
-          required
-          fullWidth
-          margin="normal"
-          inputProps={{ min: 1 }}
-        />
+        <TextField label="Available Tickets" name="availableTickets" type="number" value={formData.availableTickets} onChange={handleChange} error={!!formErrors.availableTickets} helperText={formErrors.availableTickets} required fullWidth margin="normal" inputProps={{ min: 1 }} />
 
-        <TextField
-          label="Price"
-          name="price"
-          type="number"
-          value={formData.price}
-          onChange={handleChange}
-          error={!!formErrors.price}
-          helperText={formErrors.price}
-          required
-          fullWidth
-          margin="normal"
-          InputProps={{
-            startAdornment: <InputAdornment position="start">$</InputAdornment>
-          }}
-          inputProps={{ min: 0, step: "0.01" }}
-        />
+        <TextField label="Ticket Price" name="ticketpricing" type="number" value={formData.ticketpricing} onChange={handleChange} error={!!formErrors.ticketpricing} helperText={formErrors.ticketpricing} required fullWidth margin="normal" InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }} inputProps={{ min: 0, step: "0.01" }} />
 
-        <TextField
-          label="Description"
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          multiline
-          rows={4}
-          fullWidth
-          margin="normal"
-        />
+        <TextField label="Description" name="description" value={formData.description} onChange={handleChange} multiline rows={4} fullWidth margin="normal" />
 
-        <Button
-          type="submit"
-          className="submit-button"
-          disabled={loading}
-        >
+        <Button type="submit" className="submit-button" disabled={loading}>
           {loading ? 'Saving...' : (editMode ? 'Update Event' : 'Create Event')}
         </Button>
       </form>
