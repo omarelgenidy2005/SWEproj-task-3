@@ -11,29 +11,70 @@ import EventDetails from "./components/events/EventDetails";
 import EventForm from "./components/events/EventForm";
 import MyEventsPage from "./components/events/MyEventsPage";
 import EventAnalytics from "./components/events/EventAnalytics";
-import AdminEventsPage from "./components/events/AdminEventsPage"; // ✅ Admin page
+import AdminEventsPage from "./components/events/AdminEventsPage";
+import Home from "./pages/Home"; // ✅ Import homepage
 
 function App() {
   return (
     <AuthProvider>
       <Router>
         <Routes>
-          {/* Public Routes */}
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/events" element={<EventList />} />
           <Route path="/events/:id" element={<EventDetails />} />
 
-          {/* Protected Routes */}
-          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-          <Route path="/my-events" element={<ProtectedRoute><MyEventsPage /></ProtectedRoute>} />
-          <Route path="/my-events/new" element={<ProtectedRoute><EventForm /></ProtectedRoute>} />
-          <Route path="/my-events/:id/edit" element={<ProtectedRoute><EventForm editMode={true} /></ProtectedRoute>} />
-          <Route path="/my-events/:id/analytics" element={<ProtectedRoute><EventAnalytics /></ProtectedRoute>} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-events"
+            element={
+              <ProtectedRoute>
+                <MyEventsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-events/new"
+            element={
+              <ProtectedRoute>
+                <EventForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-events/:id/edit"
+            element={
+              <ProtectedRoute>
+                <EventForm editMode={true} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-events/:id/analytics"
+            element={
+              <ProtectedRoute>
+                <EventAnalytics />
+              </ProtectedRoute>
+            }
+          />
 
-          {/* Admin-only */}
-          <Route path="/admin/events" element={<ProtectedRoute><AdminEventsPage /></ProtectedRoute>} />
+          <Route
+            path="/admin/events"
+            element={
+              <ProtectedRoute>
+                <AdminEventsPage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Router>
     </AuthProvider>
