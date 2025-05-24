@@ -80,20 +80,25 @@ body {
   justify-content: flex-end;
   padding: 2rem;
   background: linear-gradient(
-    to right,
-    rgba(0,0,0,0.8) 0%,
-    rgba(0,0,0,0.6) 50%,
-    rgba(0,0,0,0.4) 100%
+    to bottom,
+    rgba(0,0,0,0.7) 0%,
+    rgba(0,0,0,0.8) 100%
   );
 }
 
 .event-title {
-  font-size: 3.5vw;
-  font-weight: 700;
-  color: var(--background-light);
+  font-size: 30rem;  
+  font-weight: 800;
+  color: #ffffff;
   margin-bottom: 2rem;
   line-height: 1.2;
   letter-spacing: -0.02em;
+  text-shadow: 
+    2px 2px 8px rgb(255, 255, 255),
+    -2px -2px 8px rgb(255, 255, 255);
+  font-family: 'Inter', sans-serif;
+  z-index: 2;
+  position: relative;
 }
 
 .event-meta {
@@ -146,7 +151,7 @@ body {
 .event-description p {
   font-size: 1rem;
   line-height: 1.7;
-  color: var(--background-);
+  color: var(--background-dark);
   opacity: 1;
   white-space: pre-wrap;
 }
@@ -352,6 +357,10 @@ body {
   }
 
   .price-amount {
+    font-size: 2.5rem;
+  }
+
+  .event-title {
     font-size: 2.5rem;
   }
 }
