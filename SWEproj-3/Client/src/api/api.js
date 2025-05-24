@@ -1,12 +1,20 @@
 import axios from "axios";
 
-const api = axios.create({
-  baseURL: "http://localhost:5001/api/v1", // ✅ adjust if your backend uses a different port
-  withCredentials: true, // optional, depending on auth setup
+const API_BASE = "/api/v1";
+
+const getAuthHeaders = () => ({
+  'Content-Type': 'application/json',
+  'Authorization': `Bearer ${localStorage.getItem('token')}`
 });
 
+export const getAllEvents = () => axios.get(`${API_BASE}/events`);
+export const getEventById = (id) => axios.get(`${API_BASE}/events/${id}`);
+export const createEvent = (data) => axios.post(`${API_BASE}/events`, data, { headers: getAuthHeaders() });
+export const updateEvent = (id, data) => axios.put(`${API_BASE}/events/${id}`, data, { headers: getAuthHeaders() });
+export const deleteEvent = (id) => axios.delete(`${API_BASE}/events/${id}`, { headers: getAuthHeaders() });
+export const getMyEvents = () => axios.get(`${API_BASE}/events/my-events`, { headers: getAuthHeaders() });
+export const getEventAnalytics = (id) => axios.get(`${API_BASE}/events/${id}/analytics`, { headers: getAuthHeaders() });
 
-
-export default api;
-
-
+// ✅ Admin-only
+export const getAllEventsForAdmin = () => axios.get(`${API_BASE}/events/all`, { headers: getAuthHeaders() });
+export const updateEventStatus = (id, status) => axios.put(`${API_BASE}/events/${id}/status`, { status }, { headers: getAuthHeaders() });
