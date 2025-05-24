@@ -22,102 +22,226 @@ function LoginForm() {
   };
 
   return (
-  <div style={styles.page}>
-    <div style={styles.container}>
-      <h2 style={styles.title}>Login</h2>
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={styles.input}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          style={styles.input}
-        />
-        {error && <p style={styles.error}>{error}</p>}
-        <button type="submit" style={styles.button}>Login</button>
-
-        {/* 🔗 Forgot Password Link */}
-        <Link to="/forgot-password" style={styles.link}>Forgot Password?</Link>
-      </form>
+    <div style={styles.page}>
+      <div style={styles.container}>
+        <div style={styles.leftSection}>
+          <div style={styles.patternOverlay}></div>
+          <div style={styles.decorativeShape}>
+            <div style={styles.logo}>
+              <span style={styles.logoText}>mate</span>
+              <span style={styles.logoNumber}>7</span>
+              <span style={styles.logoText}>gez</span>
+            </div>
+            <p style={styles.tagline}>Your gateway to amazing events</p>
+          </div>
+        </div>
+        <div style={styles.rightSection}>
+          <div style={styles.formContainer}>
+            <h2 style={styles.title}>Welcome Back</h2>
+            <p style={styles.subtitle}>Please login to your account</p>
+            <form onSubmit={handleSubmit} style={styles.form}>
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>Email</label>
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  style={styles.input}
+                />
+              </div>
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>Password</label>
+                <input
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  style={styles.input}
+                />
+              </div>
+              {error && <p style={styles.error}>{error}</p>}
+              <button type="submit" style={styles.button}>Login</button>
+              <Link to="/forgot-password" style={styles.forgotPassword}>
+                Forgot Password?
+              </Link>
+              <p style={styles.registerText}>
+                Don't have an account?{' '}
+                <Link to="/register" style={styles.registerLink}>
+                  Register here
+                </Link>
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-);
-
+  );
 }
 
 const styles = {
   page: {
-  height: '100vh',
-  width: '100vw',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  background: 'radial-gradient(circle at top left, #0f2027, #203a43, #2c5364)',
-},
-
-  container: {
-    maxWidth: '400px',
-    width: '100%',
-    padding: '40px',
+    minHeight: '100vh',
+    width: '100vw',
     backgroundColor: '#ffffff',
-    borderRadius: '16px',
-    boxShadow: '0 20px 40px rgba(0,0,0,0.25)',
+    display: 'flex',
+    alignItems: 'stretch',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  container: {
+    display: 'flex',
+    width: '100%',
+    backgroundColor: '#ffffff',
+  },
+  leftSection: {
+    flex: '0.4',
+    backgroundColor: '#1FCBB5',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '40px',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  patternOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    opacity: 0.1,
+    background: `
+      linear-gradient(45deg, transparent 45%, #fff 45%, #fff 55%, transparent 55%),
+      linear-gradient(-45deg, transparent 45%, #fff 45%, #fff 55%, transparent 55%),
+      linear-gradient(135deg, transparent 45%, #fff 45%, #fff 55%, transparent 55%),
+      linear-gradient(-135deg, transparent 45%, #fff 45%, #fff 55%, transparent 55%)
+    `,
+    backgroundSize: '40px 40px',
+    backgroundPosition: '0 0, 20px 0, 0 20px, 20px 20px',
+    transform: 'rotate(15deg) scale(2)',
+    pointerEvents: 'none',
+  },
+  decorativeShape: {
     textAlign: 'center',
-    fontFamily: 'Inter, sans-serif',
+    color: '#ffffff',
+    position: 'relative',
+    zIndex: 1,
+  },
+  logo: {
+    display: 'flex',
+    alignItems: 'center',
+    fontSize: '3.5rem',
+    fontWeight: '600',
+    marginBottom: '20px',
+    letterSpacing: '-0.02em',
+    fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  },
+  logoText: {
+    color: '#4A4A4A',
+    textTransform: 'lowercase',
+    fontWeight: '600',
+  },
+  logoNumber: {
+    color: '#ffffff',
+    margin: '0 1px',
+    fontWeight: '600',
+  },
+  tagline: {
+    fontSize: '1.4rem',
+    opacity: '1',
+    color: '#ffffff',
+    fontWeight: '500',
+    textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+    lineHeight: '1.4',
+  },
+  rightSection: {
+    flex: '0.6',
+    padding: '60px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#ffffff',
+  },
+  formContainer: {
+    width: '100%',
+    maxWidth: '400px',
   },
   title: {
-    marginBottom: '25px',
-    fontSize: '28px',
+    fontSize: '2rem',
+    color: '#1e1e1e',
+    marginBottom: '10px',
     fontWeight: '600',
-    color: '#1f1f1f',
+  },
+  subtitle: {
+    color: '#666',
+    marginBottom: '30px',
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '10px',
+    gap: '20px',
   },
-  input: {
-  padding: '14px',
-  fontSize: '16px',
-  border: '1px solid #ccc',
-  borderRadius: '8px',
-  backgroundColor: '#f8f8f8',
-  color: '#000',
- outline: 'none',
- 
-},
-
-  button: {
-    padding: '14px',
-    fontSize: '16px',
-    backgroundColor: '#0077cc',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '8px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    transition: '0.3s',
+  inputGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
   },
-  link: {
-    fontSize: '14px',
-    marginTop: '8px',
-    color: '#0077cc',
-    textDecoration: 'none',
+  label: {
+    fontSize: '0.9rem',
+    color: '#1e1e1e',
     fontWeight: '500',
   },
+  input: {
+    padding: '12px',
+    fontSize: '1rem',
+    border: '1px solid #e1e1e1',
+    borderRadius: '8px',
+    backgroundColor: '#ffffff',
+    color: '#1e1e1e',
+    transition: 'border-color 0.3s ease',
+    outline: 'none',
+    '&::placeholder': {
+      color: '#999',
+    },
+  },
+  button: {
+    padding: '14px',
+    fontSize: '1rem',
+    backgroundColor: '#1FCBB5',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '8px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s ease',
+    marginTop: '10px',
+  },
   error: {
-    color: 'red',
-    fontSize: '14px',
+    color: '#dc3545',
+    fontSize: '0.9rem',
+    marginTop: '-10px',
+  },
+  forgotPassword: {
+    color: '#1FCBB5',
+    textDecoration: 'none',
+    fontSize: '0.9rem',
+    textAlign: 'center',
+  },
+  registerText: {
+    textAlign: 'center',
+    color: '#666',
+    fontSize: '0.9rem',
+    marginTop: '20px',
+  },
+  registerLink: {
+    color: '#1FCBB5',
+    textDecoration: 'none',
+    fontWeight: '500',
   },
 };
 
 export default LoginForm;
+

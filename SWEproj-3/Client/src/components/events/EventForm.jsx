@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  TextField,
-  Button,
-  InputAdornment
-} from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { createEvent, updateEvent, getEventById } from '../../api/api';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
@@ -103,11 +95,11 @@ const EventForm = ({ editMode = false }) => {
         availableTickets: Number(formData.availableTickets),
         ticketpricing: Number(formData.ticketpricing),
         organizer: user._id,
-        status: 'approved'
+        status: 'pending'
       };
 
       if (editMode && id) {
-        const res = await updateEvent(id, formattedData);
+        await updateEvent(id, formattedData);
         toast.success('Event updated successfully');
         navigate(`/events/${id}`);
       } else {
@@ -131,43 +123,148 @@ const EventForm = ({ editMode = false }) => {
     }));
   };
 
+  const handleDateChange = (e) => {
+    const date = new Date(e.target.value);
+    setFormData(prev => ({
+      ...prev,
+      Date: date
+    }));
+  };
+
   return (
-    <div className="event-form-container">
-      <h2>{editMode ? 'Edit Event' : 'Create New Event'}</h2>
-      <form onSubmit={handleSubmit} className="event-form">
-        <TextField label="Title" name="title" value={formData.title} onChange={handleChange} error={!!formErrors.title} helperText={formErrors.title} required fullWidth margin="normal" />
+    <div className="page-container">
+      <div className="form-layout">
+        <div className="left-section">
+          <div className="pattern-overlay"></div>
+          <div className="content-wrapper">
+            <h1>{editMode ? 'Edit Event' : 'Create New Event'}</h1>
+            <p className="tagline">Share your amazing event with the world</p>
+          </div>
+        </div>
+        <div className="right-section">
+          <div className="event-form-container">
+            <form onSubmit={handleSubmit} className="event-form">
+              <div className="form-group">
+                <label>Event Title</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  className={formErrors.title ? 'error' : ''}
+                  placeholder="Enter event title"
+                />
+                {formErrors.title && <span className="error-message">{formErrors.title}</span>}
+              </div>
 
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DatePicker
-            label="Event Date"
-            value={formData.Date}
-            onChange={(newValue) => setFormData({ ...formData, Date: newValue })}
-            slotProps={{
-              textField: {
-                fullWidth: true,
-                margin: 'normal',
-                required: true,
-                error: !!formErrors.Date,
-                helperText: formErrors.Date
-              }
-            }}
-          />
-        </LocalizationProvider>
+              <div className="form-group">
+                <label>Event Date</label>
+                <input
+                  type="datetime-local"
+                  name="Date"
+                  value={formData.Date ? formData.Date.toISOString().slice(0, 16) : ''}
+                  onChange={handleDateChange}
+                  className={formErrors.Date ? 'error' : ''}
+                />
+                {formErrors.Date && <span className="error-message">{formErrors.Date}</span>}
+              </div>
 
-        <TextField label="Location" name="location" value={formData.location} onChange={handleChange} error={!!formErrors.location} helperText={formErrors.location} required fullWidth margin="normal" />
-        <TextField label="Category" name="category" value={formData.category} onChange={handleChange} error={!!formErrors.category} helperText={formErrors.category} required fullWidth margin="normal" />
-        <TextField label="Image URL" name="Image" value={formData.Image} onChange={handleChange} error={!!formErrors.Image} helperText={formErrors.Image} required fullWidth margin="normal" />
+              <div className="form-group">
+                <label>Location</label>
+                <input
+                  type="text"
+                  name="location"
+                  value={formData.location}
+                  onChange={handleChange}
+                  className={formErrors.location ? 'error' : ''}
+                  placeholder="Enter event location"
+                />
+                {formErrors.location && <span className="error-message">{formErrors.location}</span>}
+              </div>
 
-        <TextField label="Available Tickets" name="availableTickets" type="number" value={formData.availableTickets} onChange={handleChange} error={!!formErrors.availableTickets} helperText={formErrors.availableTickets} required fullWidth margin="normal" inputProps={{ min: 1 }} />
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Available Tickets</label>
+                  <input
+                    type="number"
+                    name="availableTickets"
+                    value={formData.availableTickets}
+                    onChange={handleChange}
+                    className={formErrors.availableTickets ? 'error' : ''}
+                    min="1"
+                    placeholder="Number of tickets"
+                  />
+                  {formErrors.availableTickets && <span className="error-message">{formErrors.availableTickets}</span>}
+                </div>
 
-        <TextField label="Ticket Price" name="ticketpricing" type="number" value={formData.ticketpricing} onChange={handleChange} error={!!formErrors.ticketpricing} helperText={formErrors.ticketpricing} required fullWidth margin="normal" InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }} inputProps={{ min: 0, step: "0.01" }} />
+                <div className="form-group">
+                  <label>Ticket Price (EGP)</label>
+                  <input
+                    type="number"
+                    name="ticketpricing"
+                    value={formData.ticketpricing}
+                    onChange={handleChange}
+                    className={formErrors.ticketpricing ? 'error' : ''}
+                    min="0"
+                    step="0.01"
+                    placeholder="Enter ticket price"
+                  />
+                  {formErrors.ticketpricing && <span className="error-message">{formErrors.ticketpricing}</span>}
+                </div>
+              </div>
 
-        <TextField label="Description" name="description" value={formData.description} onChange={handleChange} multiline rows={4} fullWidth margin="normal" />
+              <div className="form-group">
+                <label>Category</label>
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  className={formErrors.category ? 'error' : ''}
+                >
+                  <option value="">Select a category</option>
+                  <option value="Music">Music</option>
+                  <option value="Sports">Sports</option>
+                  <option value="Arts">Arts</option>
+                  <option value="Technology">Technology</option>
+                  <option value="Food">Food</option>
+                  <option value="Business">Business</option>
+                  <option value="Education">Education</option>
+                  <option value="Other">Other</option>
+                </select>
+                {formErrors.category && <span className="error-message">{formErrors.category}</span>}
+              </div>
 
-        <Button type="submit" className="submit-button" disabled={loading}>
-          {loading ? 'Saving...' : (editMode ? 'Update Event' : 'Create Event')}
-        </Button>
-      </form>
+              <div className="form-group">
+                <label>Image URL</label>
+                <input
+                  type="url"
+                  name="Image"
+                  value={formData.Image}
+                  onChange={handleChange}
+                  className={formErrors.Image ? 'error' : ''}
+                  placeholder="Enter image URL"
+                />
+                {formErrors.Image && <span className="error-message">{formErrors.Image}</span>}
+              </div>
+
+              <div className="form-group">
+                <label>Description</label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  rows="4"
+                  placeholder="Enter event description"
+                />
+              </div>
+
+              <button type="submit" className="submit-button" disabled={loading}>
+                {loading ? 'Saving...' : (editMode ? 'Update Event' : 'Create Event')}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
