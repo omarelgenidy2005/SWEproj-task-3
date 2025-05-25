@@ -4,6 +4,8 @@ import { getEventById } from "../../api/api";
 import { FaCalendarAlt, FaMapMarkerAlt, FaTag, FaTicketAlt, FaClock } from "react-icons/fa";
 import "./EventDetails.css";
 import NavBar from '../common/NavBar';
+import BookTicketForm from "../bookings/BookTicketForm"; // ✅ path depends on your structure
+
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -119,12 +121,16 @@ const EventDetails = () => {
                 </div>
               </div>
 
-              <button 
-                className="primary-button"
-                disabled={event.availableTickets <= 0}
-              >
-                {event.availableTickets > 0 ? 'Book Now' : 'Sold Out'}
-              </button>
+              {event.availableTickets > 0 ? (
+  <BookTicketForm 
+    eventId={event._id}
+    pricePerTicket={event.ticketpricing}
+    availableTickets={event.availableTickets}
+  />
+) : (
+  <button className="primary-button" disabled>Sold Out</button>
+)}
+
             </div>
           </div>
         </div>

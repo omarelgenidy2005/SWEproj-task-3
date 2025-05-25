@@ -18,3 +18,4 @@ export const getEventAnalytics = (id) => axios.get(`${API_BASE}/events/${id}/ana
 // ✅ Admin-only
 export const getAllEventsForAdmin = () => axios.get(`${API_BASE}/events/all`, { headers: getAuthHeaders() });
 export const updateEventStatus = (id, status) => axios.put(`${API_BASE}/events/${id}/status`, { status }, { headers: getAuthHeaders() });
+

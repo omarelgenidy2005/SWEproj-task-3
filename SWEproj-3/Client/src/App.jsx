@@ -6,6 +6,7 @@ import ProfilePage from "./components/auth/ProfilePage";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import Home from "./pages/Home.jsx";
+import UserBookingsPage from "./pages/UserBookingsPage";
 
 import EventList from "./components/events/EventList";
 import EventDetails from "./components/events/EventDetails";
@@ -30,6 +31,8 @@ function App() {
           <Route path="/events/:id" element={<EventDetails />} />
 
           {/* Protected Routes */}
+          <Route path="/bookings" element={<ProtectedRoute><UserBookingsPage /></ProtectedRoute>} />
+
           <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           <Route path="/my-events" element={<ProtectedRoute><MyEventsPage /></ProtectedRoute>} />
           <Route path="/my-events/new" element={<ProtectedRoute><EventForm /></ProtectedRoute>} />
