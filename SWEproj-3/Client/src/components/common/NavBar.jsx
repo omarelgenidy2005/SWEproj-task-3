@@ -2,9 +2,10 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { FaUser } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
 const NavBar = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -16,17 +17,30 @@ const NavBar = () => {
           <span style={styles.logoText}>gez</span>
         </div>
       </Link>
-      
+
       <div style={styles.rightSection}>
         {user ? (
-          <button 
-            onClick={() => navigate('/profile')} 
-            style={styles.profileButton}
-            aria-label="Go to profile"
-          >
-            <FaUser style={styles.userIcon} />
-            <span style={styles.buttonText}>Profile</span>
-          </button>
+          <>
+            <button 
+              onClick={() => navigate('/profile')} 
+              style={styles.profileButton}
+              aria-label="Go to profile"
+            >
+              <FaUser style={styles.userIcon} />
+              <span style={styles.buttonText}>Profile</span>
+            </button>
+
+            <button 
+              onClick={() => {
+                logout();
+                toast.success('You have been logged out!');
+                navigate('/');
+              }} 
+              style={styles.logoutButton}
+            >
+              Log Out
+            </button>
+          </>
         ) : (
           <button 
             onClick={() => navigate('/login')} 
@@ -105,6 +119,18 @@ const styles = {
     cursor: 'pointer',
     transition: 'all 0.3s ease',
   },
+  logoutButton: {
+    background: '#EF4444',
+    color: '#ffffff',
+    border: 'none',
+    padding: '8px 16px',
+    borderRadius: '25px',
+    fontSize: '1rem',
+    fontWeight: '500',
+    cursor: 'pointer',
+    marginLeft: '10px',
+    transition: 'all 0.3s ease',
+  },
   userIcon: {
     fontSize: '1.1rem',
   },
@@ -113,4 +139,4 @@ const styles = {
   },
 };
 
-export default NavBar; 
+export default NavBar;

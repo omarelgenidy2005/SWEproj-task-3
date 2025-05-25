@@ -19,9 +19,10 @@ const EventCard = ({ event }) => {
     try {
       const date = new Date(dateStr);
       if (isNaN(date.getTime())) return null;
-      return new Date(dateStr).toLocaleDateString('en-US', {
+      return date.toLocaleDateString('en-US', {
+        weekday: 'long',
         year: 'numeric',
-        month: 'short',
+        month: 'long',
         day: 'numeric'
       });
     } catch {
@@ -80,7 +81,7 @@ const EventCard = ({ event }) => {
             <div style={styles.ticketCount}>
               <FaTicketAlt style={styles.icon} />
               <span style={styles.ticketText}>
-                {event?.availableTickets || 0} Tickets
+                {event?.availableTickets || 0} Tickets Available
               </span>
             </div>
             <div style={styles.ticketStatus}>
@@ -107,24 +108,18 @@ const styles = {
     cursor: 'pointer',
     border: '1px solid #1FCBB5',
     transition: 'all 0.3s ease',
-    width: '200px',
-    height: '300px',
   },
   cardInner: {
     backgroundColor: '#ffffff',
     borderRadius: '8px',
     overflow: 'hidden',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
   },
   imageContainer: {
     width: '100%',
-    height: '100px',
+    height: '120px',
     overflow: 'hidden',
     position: 'relative',
-    flexShrink: 0,
   },
   image: {
     width: '100%',
@@ -133,86 +128,77 @@ const styles = {
   },
   priceTag: {
     position: 'absolute',
-    top: '8px',
-    right: '8px',
+    top: '12px',
+    right: '12px',
     backgroundColor: '#1FCBB5',
     color: '#ffffff',
-    padding: '4px 8px',
+    padding: '6px 12px',
     borderRadius: '20px',
-    fontSize: '0.8rem',
+    fontSize: '0.9rem',
     fontWeight: '600',
     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
   },
   contentContainer: {
-    padding: '12px',
-    display: 'flex',
-    flexDirection: 'column',
-    height: 'calc(100% - 100px)', // Subtract image height
+    padding: '16px',
   },
   title: {
-    fontSize: '1rem',
+    fontSize: '1.1rem',
     fontWeight: '600',
     color: '#1e1e1e',
-    marginBottom: '8px',
+    marginBottom: '12px',
     fontFamily: 'Inter, sans-serif',
     display: '-webkit-box',
-    WebkitLineClamp: 1,
+    WebkitLineClamp: 2,
     WebkitBoxOrient: 'vertical',
     overflow: 'hidden',
-    lineHeight: '1.2',
+    lineHeight: '1.3',
+    height: '2.8em',
   },
   details: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '6px',
-    marginBottom: '8px',
-    flex: 1,
+    gap: '8px',
+    marginBottom: '16px',
   },
   detailItem: {
     display: 'flex',
     alignItems: 'center',
-    gap: '6px',
-    minHeight: '20px',
+    gap: '8px',
   },
   icon: {
     color: '#1FCBB5',
-    fontSize: '0.8rem',
+    fontSize: '0.9rem',
     flexShrink: 0,
   },
   detailText: {
     color: '#4A4A4A',
-    fontSize: '0.8rem',
+    fontSize: '0.85rem',
     fontWeight: '400',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
   },
   ticketInfo: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '6px',
+    marginTop: '12px',
+    padding: '8px',
     backgroundColor: '#f8f9fa',
     borderRadius: '6px',
-    marginTop: 'auto',
   },
   ticketCount: {
     display: 'flex',
     alignItems: 'center',
-    gap: '4px',
+    gap: '6px',
   },
   ticketText: {
     color: '#4A4A4A',
-    fontSize: '0.8rem',
+    fontSize: '0.85rem',
     fontWeight: '500',
-    whiteSpace: 'nowrap',
   },
   statusBadge: {
-    padding: '3px 8px',
+    padding: '4px 10px',
     borderRadius: '20px',
-    fontSize: '0.75rem',
+    fontSize: '0.8rem',
     fontWeight: '500',
-    whiteSpace: 'nowrap',
   },
 };
 
