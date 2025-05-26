@@ -16,6 +16,7 @@ import EventAnalytics from "./components/events/EventAnalytics";
 import AdminEventsPage from "./components/events/AdminEventsPage"; // ✅ Admin page
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AdminUsersPage from "./components/Admins/AdminUsersPage";
 
 function App() {
   return (
@@ -41,6 +42,8 @@ function App() {
 
           {/* Admin-only */}
           <Route path="/admin/events" element={<ProtectedRoute><AdminEventsPage /></ProtectedRoute>} />
+          <Route path="/admin/users" element={<ProtectedRoute><AdminUsersPage /></ProtectedRoute>} />
+
         </Routes>
          {/* ✅ Add this just below Routes */}
         <ToastContainer position="top-right" autoClose={3000} />

@@ -19,3 +19,6 @@ export const getEventAnalytics = (id) => axios.get(`${API_BASE}/events/${id}/ana
 export const getAllEventsForAdmin = () => axios.get(`${API_BASE}/events/all`, { headers: getAuthHeaders() });
 export const updateEventStatus = (id, status) => axios.put(`${API_BASE}/events/${id}/status`, { status }, { headers: getAuthHeaders() });
 
+export const getAllUsers = () => axios.get(`${API_BASE}/users`, { headers: getAuthHeaders() });
+export const deleteUser = (id) => axios.delete(`${API_BASE}/users/${id}`, { headers: getAuthHeaders() });
+export const updateUserRole = (id, role) => axios.put(`${API_BASE}/users/${id}`, { role }, { headers: getAuthHeaders() });
