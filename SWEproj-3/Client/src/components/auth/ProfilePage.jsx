@@ -78,9 +78,14 @@ const ProfilePage = () => {
                       </>
                     )}
                     {userData.role === "System Admin" && (
-                      <button onClick={() => navigate("/admin/events")} style={styles.button}>
-                        View All Events
-                      </button>
+                      <>
+                        <button onClick={() => navigate("/admin/events")} style={styles.button}>
+                          View All Events
+                        </button>
+                        <button onClick={() => navigate("/admin/users")} style={styles.button}>
+                          View All Users
+                        </button>
+                      </>
                     )}
                     <button onClick={() => setEditing(true)} style={styles.button}>
                       Edit Profile
