@@ -1,0 +1,18 @@
+.admin-events-container {
+  padding: 2rem;
+  color: white;
+}
+
+.admin-event-card {
+  background: #222;
+  border: 1px solid #444;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+}
+
+.status-buttons {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}

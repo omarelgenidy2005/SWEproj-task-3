@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getEventById } from "../../api/api";
-import { useAuth } from "../../context/AuthContext";
+import { FaCalendarAlt, FaMapMarkerAlt, FaTag, FaTicketAlt, FaClock } from "react-icons/fa";
+import "./EventDetails.css";
+import NavBar from '../common/NavBar';
+import BookTicketForm from "../bookings/BookTicketForm"; // ✅ path depends on your structure
+
 
 const EventDetails = () => {
   const { id } = useParams();
-  const { user } = useAuth();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -16,7 +19,8 @@ const EventDetails = () => {
         const response = await getEventById(id);
         setEvent(response.data);
       } catch (err) {
-        setError("Event not found or failed to load.");
+        setError("Failed to load event details");
+        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -25,42 +29,114 @@ const EventDetails = () => {
     fetchEvent();
   }, [id]);
 
-  if (loading) return <p>Loading event details...</p>;
-  if (error) return <p>{error}</p>;
-  if (!event) return null;
+  const formatDate = (dateStr) => {
+    if (!dateStr) return null;
+    try {
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return null;
+      return date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch {
+      return null;
+    }
+  };
+
+  const formatPrice = (price) => {
+    if (typeof price !== 'number') return 'N/A';
+    return `${price.toLocaleString()} EGP`;
+  };
+
+  if (loading) return <div className="loading-message">Loading event details...</div>;
+  if (error) return <div className="error-message">{error}</div>;
+  if (!event) return <div className="no-event-message">Event not found.</div>;
 
   return (
-    <div className="event-details" style={detailStyle}>
-      <h2>{event.title}</h2>
-      <img
-        src={event.Image}
-        alt={event.title}
-        style={{ width: "100%", maxWidth: "500px", borderRadius: "10px" }}
-      />
-      <p><strong>Date:</strong> {new Date(event.Date).toLocaleDateString()}</p>
-      <p><strong>Location:</strong> {event.location}</p>
-      <p><strong>Category:</strong> {event.category}</p>
-      <p><strong>Price:</strong> ${event.ticketpricing}</p>
-      <p><strong>Description:</strong> {event.description}</p>
-      <p><strong>Available Tickets:</strong> {event.availableTickets}</p>
-
-      {user?.role === "customer" && (
-        <div style={{ marginTop: "1rem" }}>
-          {/* Placeholder for booking form (will be implemented in part e) */}
-          <button disabled>Booking Coming Soon</button>
+    <>
+      <NavBar />
+      <div className="event-details-container">
+        <div className="event-left-section">
+          <div className="event-hero">
+            <img 
+              src={event.Image || "/default-event-image.jpg"} 
+              alt={event.title} 
+              className="hero-image" 
+            />
+            <div className="hero-overlay">
+              <h1 className="event-title">{event.title}</h1>
+              <div className="event-meta">
+                <span className="meta-item">
+                  <FaCalendarAlt className="meta-icon" />
+                  {formatDate(event.Date)}
+                </span>
+                <span className="meta-item">
+                  <FaMapMarkerAlt className="meta-icon" />
+                  {event.location}
+                </span>
+                <span className="meta-item">
+                  <FaTag className="meta-icon" />
+                  {event.category}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="event-description">
+            <h3>About This Event</h3>
+            <p>{event.description}</p>
+          </div>
         </div>
-      )}
-    </div>
-  );
-};
 
-const detailStyle = {
-  padding: "1rem",
-  maxWidth: "700px",
-  margin: "auto",
-  backgroundColor: "#fff",
-  borderRadius: "8px",
-  boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+        <div className="event-content">
+          <div className="ticket-container">
+            <div className="ticket-box">
+              <div className="price-section">
+                <span className="price-label">Ticket Price</span>
+                <span className="price-amount">{formatPrice(event.ticketpricing)}</span>
+                <span className="price-currency">per ticket</span>
+              </div>
+
+              <div className="ticket-info">
+                <div className="info-row">
+                  <FaTicketAlt className="info-icon" />
+                  <span>
+                    {event.availableTickets} {event.availableTickets === 1 ? 'ticket' : 'tickets'} available
+                  </span>
+                </div>
+                <div className="info-row">
+                  <FaTag className="info-icon" />
+                  <span>{event.category}</span>
+                </div>
+                <div className="info-row">
+                  <FaClock className="info-icon" />
+                  <span>{formatDate(event.Date)}</span>
+                </div>
+                <div className="info-row">
+                  <FaMapMarkerAlt className="info-icon" />
+                  <span>{event.location}</span>
+                </div>
+              </div>
+
+              {event.availableTickets > 0 ? (
+  <BookTicketForm 
+    eventId={event._id}
+    pricePerTicket={event.ticketpricing}
+    availableTickets={event.availableTickets}
+  />
+) : (
+  <button className="primary-button" disabled>Sold Out</button>
+)}
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default EventDetails;
